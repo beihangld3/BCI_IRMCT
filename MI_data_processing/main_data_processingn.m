@@ -46,11 +46,11 @@ end
 lpsdR = log(psdR);
 
 %% feature analysis
-% fvec1 = reshape(lpsdL, [size(lpsdL,1)*size(lpsdL,2) size(lpsdL,3)*size(lpsdL,4)]);
-fvec1 = reshape(lpsdL, [80*49 16*23]);
+fvec1 = reshape(lpsdL, [size(lpsdL,1)*size(lpsdL,2) size(lpsdL,3)*size(lpsdL,4)]);
+% fvec1 = reshape(lpsdL, [80*49 16*23]);
 lbl1 = ones(size(fvec1,1),1);
-% fvec2 = reshape(lpsdR, [size(lpsdR,1)*size(lpsdR,2) size(lpsdR,3)*size(lpsdR,4)]);
-fvec2 = reshape(lpsdR, [80*49 16*23]);
+fvec2 = reshape(lpsdR, [size(lpsdR,1)*size(lpsdR,2) size(lpsdR,3)*size(lpsdR,4)]);
+% fvec2 = reshape(lpsdR, [80*49 16*23]);
 lbl2 = ones(size(fvec2,1),1)*2;
 load('chanlocs16.mat')
 

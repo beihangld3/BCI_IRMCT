@@ -10,5 +10,6 @@ Trigger values:
  9 # Right_go
 
 So, what we really care is the period after left_go and right_go (e.g., 4 s).
+main function: main_data_processingn.m
 
 
