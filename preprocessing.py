@@ -3,7 +3,8 @@ from __future__ import print_function
 from __future__ import division
 
 # set the data path
-dataPath = r'D:\data\Records\fif'
+#dataPath = r'D:\data\Records\fif'
+dataPath = r'E:\data\zy\Records\fif'
 
 import os, sys, scipy, scipy.io
 import mne
