@@ -66,7 +66,7 @@ subplot(1,2,2);topoplot(mean(DPM12(:,[10 11]),2),chanlocs16);
 %% feature selection and classification
 K = 10;
 featureNumber = 30; % replaced by grid search
-cp = cvpartition(size(lpsd_up,1), 'kfold', K);
+cp = cvpartition(size(lpsdL,1), 'kfold', K);
 testError_s = zeros(K,1); % sample-based test error
 
 % 80 49 16*23
@@ -107,4 +107,7 @@ for k = 1: K
     testError_s(k) = classerror(testLabels, Class);
     
 end
+
+aveError = mean(testError_s);
+disp(['Mean error is ' num2str(aveError)]);
 
