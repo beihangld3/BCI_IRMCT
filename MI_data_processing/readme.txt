@@ -1,4 +1,4 @@
-Each session consists of 5 runs, and each run consists of 40 trials (20 Left and 20 Right).
+Each session consists of 4 runs, and each run consists of 40 trials (20 Left and 20 Right).
 Trigger values:
 
 15 # start of the run
