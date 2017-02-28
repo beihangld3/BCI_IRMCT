@@ -9,6 +9,6 @@ Trigger values:
 10 # Right_ready
  9 # Right_go
 
-So want we really care is the period after left_go and right_go.
+So, what we really care is the period after left_go and right_go (e.g., 4 s).
 
 
