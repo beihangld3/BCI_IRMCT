@@ -52,6 +52,7 @@ lbl1 = ones(size(fvec1,1),1);
 % fvec2 = reshape(lpsdR, [size(lpsdR,1)*size(lpsdR,2) size(lpsdR,3)*size(lpsdR,4)]);
 fvec2 = reshape(lpsdR, [80*49 16*23]);
 lbl2 = ones(size(fvec2,1),1)*2;
+load('chanlocs16.mat')
 
 DP12 = cva_tun_opt([fvec1;fvec2],[lbl1;lbl2]);
 DPM12 = reshape(DP12,16,23);
@@ -102,8 +103,8 @@ for k = 1: K
     testData = testData(:, IndSelFeat); %
     testLabels = [testLabels1; testLabels2]; %
             
-    Class = classify(testData, dataTrain, labelTrain); % , !!!!!这一步可以替换成SVM,RF
+    Class = classify(testData, dataTrain, labelTrain); % relaced by SVM, RM, et al
     testError_s(k) = classerror(testLabels, Class);
-        
+    
 end
 
