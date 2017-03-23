@@ -1,0 +1,2 @@
+ipython pyLptControl.py
+pause
