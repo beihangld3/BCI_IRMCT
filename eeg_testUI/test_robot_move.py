@@ -7,11 +7,11 @@ Dong Liu, IRMCT, BUAA, 2017
 # communica with the exoskeleton?
 WITH_Robot= True
 # classifier
-CLS_FILE= r'D:\data\Records\fif\classifier\classifier-64bit.pcl'
+CLS_FILE= r'E:\DongLiu_data\MI\fif\classifier\classifier-64bit.pcl'
 
 # protocol: 
 trials_each= 30   # put it to a small number for debug  30
-host= '192.168.2.112'
+host= '192.168.2.111'
 port = 9999
 
 ############################################
@@ -400,7 +400,8 @@ if __name__=='__main__':
 			if WITH_Robot:
 				print('>> client order', robot_action)
 				s.sendall(robot_action)
-			print('>> Waiting for next start signal from RexController.')
+				time.sleep(5)
+			print('>> Waiting for next start signal from the robot.')
 			results= []
 		
 		cv2.imshow("mi", img)
