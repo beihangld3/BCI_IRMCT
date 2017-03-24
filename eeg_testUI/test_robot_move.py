@@ -89,8 +89,8 @@ from decoder import BCIDecoderDaemon
 import socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   #dongliu
 s.connect((host, port))
-data = s.recv(1024)
-print('server:'  + data)
+#data = s.recv(1024)
+#print('server:'  + data)
 s.sendall('{"id"=1,"name"="ld","password"=123,"command"="reset"}')
 
 #dir3 = '{"id"=1,"name"="ld","password"=123,"command"="stop"}'
