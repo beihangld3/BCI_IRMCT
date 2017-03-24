@@ -7,8 +7,9 @@ Dong Liu, IRMCT, BUAA, 2017
 # communica with the exoskeleton?
 WITH_Robot= False
 # classifier
-CLS_FILE= r'E:\DongLiu_data\MI\fif\classifier\classifier-64bit.pcl'
+#CLS_FILE= r'E:\DongLiu_data\MI\fif\classifier\classifier-64bit.pcl'
 
+CLS_FILE= r'D:\data\Records\fif\classifier\classifier-64bit.pcl'
 # protocol: 
 trials_each= 30   # put it to a small number for debug  30
 

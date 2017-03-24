@@ -1,0 +1,18 @@
+#!/bin/bash
+# 2011-05-27  Michele Tavella <michele.tavella@epfl.ch>
+# 2011-05-17  Inaki Iturrate <inaki.iturrate@epfl.ch>
+
+if [ "z$1" == "z" ]; then
+	echo "[cl_runloop] Error: cl_acquisition arguments needed";
+	exit 1;
+fi
+
+cl_rpcnotify "CnbiTk cl_runloop" "Starting: $*"
+cl_copyxsl
+
+gnome-terminal \
+---tab "CnbiTk RPC Shell (devel)" \
+---tab -e "bash -c 'cl_keepalive cl_nameserver'" --title "CnbiTk Nameserver" \
+---tab -e "bash -c 'sleep 1; cl_keepalive cl_processing'" --title "CnbiTk Processing" \
+---tab -e "bash -c 'sleep 2; cl_keepalive cl_acquisition $*'" --title "CnbiTk Acquisition" \
+---tab -e "bash -c 'sleep 4; python /usr/share/eeg_scope/scope.py'" --title "EEG Scope"
