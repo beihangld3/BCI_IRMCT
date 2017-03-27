@@ -7,12 +7,12 @@ Dong Liu, IRMCT, BUAA, 2017
 # communica with the exoskeleton?
 WITH_Robot= True
 # classifier
-CLS_FILE= r'E:\DongLiu_data\MI\fif\classifier\classifier-64bit.pcl'
+CLS_FILE= r'D:\EEG_Data\ld3\session2\fif\classifier\classifier-64bit.pcl'
+
 
 # protocol: 
 trials_each= 30   # put it to a small number for debug  30
-host= '192.168.2.111'
-port = 9999
+t_init= 20 # initial waiting time before starting  15
 
 ############################################
 # For Debug, fake decoder, FAKE_CLS = None or 'left' or 'right' or 'middle' or 'random'
@@ -46,7 +46,6 @@ DEBUG_PROBS = False
 # etc
 refresh_rate= 0.05 # in seconds; min=0.01
 
-t_init= 1 # initial waiting time before starting  15
 t_wait= 2 # delay until next trial. only used if WITH_Robot == False
 # end timings relative to the starting of rest
 t_trialstart= 2
@@ -87,13 +86,7 @@ from triggerdef_16 import TriggerDef
 from stream_receiver import StreamReceiver
 from decoder import BCIDecoderDaemon
 import socket
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   #dongliu
-s.connect((host, port))
-#data = s.recv(1024)
-#print('server:'  + data)
-s.sendall('{"id"=1,"name"="ld","password"=123,"command"="reset"}')
 
-#dir3 = '{"id"=1,"name"="ld","password"=123,"command"="stop"}'
 
 assert refresh_rate >= 0.01
 
@@ -202,6 +195,17 @@ if __name__=='__main__':
 		trigger= pyLptControl.MockTrigger()
 		trigger.init(50)
 
+	HOST= raw_input('Server IP address:')
+	#host= '192.168.2.115'
+	host = HOST
+	port = 9999
+
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   #dongliu
+	s.connect((host, port))
+	#data = s.recv(1024)
+	#print('server:'  + data)
+	s.sendall('{"id"=1,"name"="ld","password"=123,"command"="reset"}')
+	#dir3 = '{"id"=1,"name"="ld","password"=123,"command"="stop"}'
 	subjectID= raw_input('Subject ID ? ').strip()
 	print ('subjectID:', subjectID)
 	timestamp= datetime.now()
@@ -400,7 +404,7 @@ if __name__=='__main__':
 			if WITH_Robot:
 				print('>> client order', robot_action)
 				s.sendall(robot_action)
-				time.sleep(5)
+#				time.sleep(5)
 			print('>> Waiting for next start signal from the robot.')
 			results= []
 		

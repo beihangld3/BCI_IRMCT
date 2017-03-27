@@ -1,6 +1,8 @@
 from __future__ import print_function
 from __future__ import division
 
+OUT_DIR= 'C:/data/Records' # give absolute path
+
 """
 stream_receiver.py
 
@@ -38,8 +40,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-
-OUT_DIR= 'C:/data/Records' # give absolute path
 
 import pycnbi_config # from global common folder
 import time, os, sys, datetime
