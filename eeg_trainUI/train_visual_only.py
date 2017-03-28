@@ -5,10 +5,10 @@ TRIGGER_DEVICE= 'USB2LPT'
 #TRIGGER_DEVICE = 'FAKE'
 
 # classes
-directions= [0,1] # 0:L, 1:R, 2:U, 3:D
+directions= [0,1,2,3] # 0:L, 1:R, 2:U, 3:D
 #directions= [2,3]
 
-trials_each= 30 # number of trials for each action
+trials_each= 3000 # number of trials for each action
 
 # Google Glass
 GLASS_USE= False

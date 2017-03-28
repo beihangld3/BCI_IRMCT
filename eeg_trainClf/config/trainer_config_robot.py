@@ -6,7 +6,8 @@ Dong Liu, BUAA, 2017
 """
 import pycnbi_config
 import numpy as np
-DATADIR= r'D:\data\Records\fif'
+DATADIR= r'D:\EEG_Data\qs9\session2\fif'
+
 '''"""""""""""""""""""""""""""
 Parameters for computing PSD
 Ignored if LOAD_PSD == Ture
@@ -45,7 +46,7 @@ TRIGGER_DEF= {tdef.LEFT_GO, tdef.RIGHT_GO}
 
 # epoch ranges in seconds relative to onset
 #EPOCH= [0, 2] # 这个窗口对magnien来说，取得了75的 sample-based的准确率
-EPOCH= [0, 2] # 对于amandine，S3，取得了67%的精度
+EPOCH= [0, 4] # 对于amandine，S3，取得了67%的精度
 
 # change WALk_GO event values
 DEBUG_STAND_TRIGGERS= False
@@ -116,7 +117,7 @@ TIMELAG= dict(w_frames=10, wstep=5, downsample=100)
  CLASSIFIER
 """""""""""""""""""""""""""'''
 # clasifier
-#CLASSIFIER= 'RF' # RF | LDA | rLDA
+#CLASSIFIER= 'rLDA' # RF | LDA | rLDA
 CLASSIFIER = 'RF'
 #CLASSIFIER= 'LDA'
 

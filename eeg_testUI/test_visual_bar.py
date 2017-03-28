@@ -7,11 +7,17 @@ Dong Liu, IRMCT, BUAA, 2017
 # communica with the exoskeleton?
 WITH_Robot= False
 # classifier
+<<<<<<< HEAD
+#CLS_FILE= r'C:\data\Records\fif\classifier\classifier-64bit.pcl'
+CLS_FILE= r'D:\EEG_Data\ld3\pool\classifier\classifier-64bit.pcl'
+=======
 #CLS_FILE= r'E:\DongLiu_data\MI\fif\classifier\classifier-64bit.pcl'
+>>>>>>> b03c5de57535dad284c9f1a9897ba37a3bcc3a82
 
 CLS_FILE= r'D:\data\Records\fif\classifier\classifier-64bit.pcl'
 # protocol: 
 trials_each= 30   # put it to a small number for debug  30
+t_init= 20 # initial waiting time before starting  15
 
 ############################################
 # For Debug, fake decoder, FAKE_CLS = None or 'left' or 'right' or 'middle' or 'random'
@@ -44,7 +50,6 @@ DEBUG_PROBS = False
 # etc
 refresh_rate= 0.05 # in seconds; min=0.01
 
-t_init= 1 # initial waiting time before starting  15
 t_wait= 2 # delay until next trial. only used if WITH_Robot == False
 # end timings relative to the starting of rest
 t_trialstart= 2
@@ -335,8 +340,8 @@ if __name__=='__main__':
 
 				# accumulate probs
 				for i in range( len(probs_new) ):
-					probs[i]= probs[i] * 0.9 + probs_new[i] * 0.1 
-				probs[probDown]= 0.5
+					probs[i]= probs[i] * 0.88 + probs_new[i] * 0.12
+				probs[probDown]= 0.25
 				pdiff= probs[probUp] - probs[probDown]
 
 				if POSITIVE_FEEDBACK=='U':
