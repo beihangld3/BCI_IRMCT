@@ -1,7 +1,8 @@
 % processing in python:
+% Dong Liu, IR&MCT, BUAA
 clear; close all;clc;
-
-dataPath = 'D:\EEG_Data\qs9\session2\fif';
+tic;
+dataPath = 'D:\EEG_Data\zy1\session2\fif';
 
 dur = 4; % time period after L/R go
 SP_filter = 'Laplacian';
@@ -79,9 +80,12 @@ topoplot(mean(DPM12(:,[10 11]),2),chanlocs16);
 % 24] Hz beta
 %% feature selection and classification
 K = 5;
-featureNumber = 10; % replaced by grid search
+featureNumber = 30; % replaced by grid search
+n_trials = size(lpsdL,1) + size(lpsdR,1); % total trial numbers
 cp = cvpartition(size(lpsdL,1), 'kfold', K);
 testError_s = zeros(K,1); % sample-based test error
+testError_t = zeros(n_trials, size(lpsdL,2), 2); % trial-based test error
+testError_labels = [];
 
 % 80 49 16*23
 fvecL = reshape(lpsdL, [size(lpsdL,1) size(lpsdL,2) size(lpsdL,3)*size(lpsdL,4)]);
@@ -109,10 +113,14 @@ for k = 1: K
     labelTrain = [trainLabels1;trainLabels2];
     
     testData1  = fvecL(find(test(cp, k)),:,:);
+    testData1_temp = testData1(:,:,IndSelFeat); % test Data-1 temporary
+    testLabel1_temp = ones(size(testData1_temp,1),1); % test Label-1 temporary
     testData1 = reshape(testData1, size(testData1,1)*size(testData1,2),size(testData1,3));
     testLabels1 = ones(size(testData1,1),1);
     
     testData2  = fvecR(find(test(cp, k)),:,:);
+    testData2_temp = testData2(:,:,IndSelFeat); % test Data-2 temporary
+    testLabel2_temp = ones(size(testData2_temp,1),1)*2; % test Label-2 temporary
     testData2 = reshape(testData2, size(testData2,1)*size(testData2,2),size(testData2,3));
     testLabels2 = ones(size(testData2,1),1)*2;
     
@@ -128,12 +136,24 @@ for k = 1: K
 
     testError_s(k) = classerror(testLabel, Class);
     
+    % trial-based collection
+    testData_temp = cat(1, testData1_temp, testData2_temp);
+    testLabel_temp = [testLabel1_temp; testLabel2_temp];
+    testError_labels = [testError_labels; testLabel_temp];
+    for i = 1: size(testData_temp, 1)
+        for j = 1:size(testData_temp,2)
+            temp = squeeze(testData_temp(i,j,:));
+            [~,~,post] = classify(temp', dataTrain, labelTrain);
+            testError_t(i+size(testData_temp,1)*(k-1), j, :) = post;
+        end
+    end
 end
 
 aveError = mean(testError_s);
 disp(['Mean error is ' num2str(aveError)]);
 
 meanAUC = mean(AUC);
+disp(['Mean AUC is ' num2str(meanAUC)]);
 chance1 = 0:0.01:1;
 figure(4)
 for i = 1: K 
@@ -144,12 +164,60 @@ set(gca, 'Xtick', 0:0.2:1);
 xlabel('False Positive Rate');
 set(gca, 'Ytick', 0:0.2:1);
 ylabel('True Positive Rate');
-title('S1');
+title('S6');
 s = num2str(meanAUC, '%10.3f');
 str = {strcat('mean AUC = ',s)};
-text(0.4, 0.1, str, 'Color','blue','FontSize',8); %%%%% 8,单独的时候换成12
+text(0.4, 0.1, str, 'Color','blue','FontSize',8); % 8,单独的时候换成12
 set(gca, 'FontSize', 15);
 %     grid on
 %     grid minor
 axis square
 hold off;
+
+%% BCI_command sending accuracy, with evidence accumulation
+S0 = [0.5; 0.5];
+alpha = 0.86; % pre-settings
+threshold = 0.7; % threshold
+
+S = zeros(n_trials, size(lpsdL,2), 2);
+
+for k = 1:size(S,1) % all trials
+    S(k,1,:) = alpha*S0 + (1-alpha)*squeeze(testError_t(k,1,:)); % post(1)
+    for t = 2:size(S,2)
+        S(k,t,:) = alpha*squeeze(S(k, t-1,:)) + (1-alpha)*squeeze(testError_t(k,t,:));
+    end
+end
+
+% select one direction as positive, then make the decisions
+S_L = squeeze(S(:,:,1));
+test_decision = zeros(size(S_L,1),1);
+for i = 1:size(S_L, 1)
+    if max(S_L(i,:))>= threshold
+        test_decision(i) = 1;
+    elseif min(S_L(i,:)) <= 1-threshold
+        test_decision(i) = 2;
+    end
+end
+
+ACC1 = classerror(testError_labels, test_decision);
+disp(['If the non-threshold-reached trials is removed: ' num2str(ACC1)]);
+
+% Don't remove the no-decision trials, just use the last sample as decision
+for i = 1:length(test_decision)
+    if test_decision(i) == 0
+        temp = S_L(i,:);
+        temp1 = temp(end);
+        if temp1> 0.5
+            test_decision(i)  = 1;
+        elseif temp1 < 0.5
+            test_decision(i) = 2;
+        end
+    end
+end
+
+ACC2 = classerror(testError_labels, test_decision);
+disp(['If the non-threshold-reached trials is removed: ' num2str(ACC2)]);
+% Not recommended, but during the online recording, this is the case!!
+toc;
+
+
