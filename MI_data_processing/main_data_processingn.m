@@ -224,7 +224,7 @@ toc;
 
 %% statistics on feature
 % The 4-D matrix
-pool = [7, 8, 9, 10, 11];  % C1 C3 Cz C4 C2
+pool = [7, 8, 10, 11];  % C1 C3 Cz C4 C2
 significance = 0.0001; % 0.05
 figure(5)
 for i = 1:length(pool)
