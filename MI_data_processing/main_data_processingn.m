@@ -1,11 +1,8 @@
 % processing in python:
 clear; close all;clc;
 
-<<<<<<< HEAD
-dataPath = 'D:\EEG_Data\ld3\session2\fif';
-=======
-dataPath = 'K:\EEG_Data\qs9\session2\fif';
->>>>>>> b03c5de57535dad284c9f1a9897ba37a3bcc3a82
+dataPath = 'D:\EEG_Data\qs9\session2\fif';
+
 dur = 4; % time period after L/R go
 SP_filter = 'Laplacian';
 
@@ -60,16 +57,29 @@ load('chanlocs16.mat')
 
 DP12 = cva_tun_opt([fvec1;fvec2],[lbl1;lbl2]);
 DPM12 = reshape(DP12,16,23);
+
 figure(1)
 imagesc(DPM12);
+xlabel('Frequency band (Hz)');
+ylabel('Channel label');
+channel16 = importdata('channelLabels16.txt')'; 
+set(gca,'YTick',1:16)
+set(gca,'YTickLabel',channel16)
+set(gca,'XTick',1:4:23)
+set(gca,'XTickLabel',4:8:48)
+set(gca, 'FontSize', 13)
+
 figure(2)
-subplot(1,2,1);topoplot(mean(DPM12(:,[4 5]),2),chanlocs16);
-subplot(1,2,2);topoplot(mean(DPM12(:,[10 11]),2),chanlocs16);
+topoplot(mean(DPM12(:,[4 5]),2),chanlocs16);
+
+figure(3)
+topoplot(mean(DPM12(:,[10 11]),2),chanlocs16);
+
 % 1:1:23  -> 4:2:48, so x*2+2,  [4 5] -> [10 12] Hz alpha; [10 11] -> [22
 % 24] Hz beta
 %% feature selection and classification
-K = 10;
-featureNumber = 30; % replaced by grid search
+K = 5;
+featureNumber = 10; % replaced by grid search
 cp = cvpartition(size(lpsdL,1), 'kfold', K);
 testError_s = zeros(K,1); % sample-based test error
 
@@ -77,6 +87,9 @@ testError_s = zeros(K,1); % sample-based test error
 fvecL = reshape(lpsdL, [size(lpsdL,1) size(lpsdL,2) size(lpsdL,3)*size(lpsdL,4)]);
 fvecR = reshape(lpsdR, [size(lpsdR,1) size(lpsdR,2) size(lpsdR,3)*size(lpsdR,4)]);
 
+x = []; 
+y = []; 
+AUC = [];
 for k = 1: K
     trainData1 = fvecL(find(training(cp, k)),:,:);
     trainData1 = reshape(trainData1, [size(trainData1,1)*size(trainData1,2),size(trainData1,3)]);
@@ -105,13 +118,38 @@ for k = 1: K
     
     testData = [testData1; testData2]; %
     testData = testData(:, IndSelFeat); %
-    testLabels = [testLabels1; testLabels2]; %
+    testLabel = [testLabels1; testLabels2]; %
             
-    Class = classify(testData, dataTrain, labelTrain); % relaced by SVM, RM, et al
-    testError_s(k) = classerror(testLabels, Class);
+    [Class,~, post] = classify(testData, dataTrain, labelTrain); % relaced by SVM, RM, et al
+    [testX, testY, T, AUC1] = perfcurve(testLabel, post(:,2), 2); 
+    x = [x, testX]; 
+    y = [y, testY]; 
+    AUC = [AUC, AUC1];
+
+    testError_s(k) = classerror(testLabel, Class);
     
 end
 
 aveError = mean(testError_s);
 disp(['Mean error is ' num2str(aveError)]);
 
+meanAUC = mean(AUC);
+chance1 = 0:0.01:1;
+figure(4)
+for i = 1: K 
+plot(x(:,i),y(:,i)); hold on; 
+end
+plot(chance1, chance1,'r--','LineWidth',2);
+set(gca, 'Xtick', 0:0.2:1);
+xlabel('False Positive Rate');
+set(gca, 'Ytick', 0:0.2:1);
+ylabel('True Positive Rate');
+title('S1');
+s = num2str(meanAUC, '%10.3f');
+str = {strcat('mean AUC = ',s)};
+text(0.4, 0.1, str, 'Color','blue','FontSize',8); %%%%% 8,单独的时候换成12
+set(gca, 'FontSize', 15);
+%     grid on
+%     grid minor
+axis square
+hold off;
