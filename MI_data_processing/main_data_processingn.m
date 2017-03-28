@@ -1,18 +1,9 @@
 % processing in python:
 % Dong Liu, IR&MCT, BUAA
 clear; close all;clc;
-<<<<<<< HEAD
-
-<<<<<<< HEAD
-dataPath = 'K:\EEG_Data\ygj\session2\fif';
-=======
-dataPath = 'D:\EEG_Data\qs9\session2\fif';
-=======
 tic;
 dataPath = 'D:\EEG_Data\ld3\session2\fif';
->>>>>>> 2146926923a71a7bc8a0d7df4d120e375289c36c
 
->>>>>>> c6ecd40a8859c27a91a5d78c6315615326d67675
 dur = 4; % time period after L/R go
 SP_filter = 'Laplacian';
 
