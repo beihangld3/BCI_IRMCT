@@ -2,7 +2,7 @@
 % Dong Liu, IR&MCT, BUAA
 clear; close all;clc;
 tic;
-dataPath = 'D:\EEG_Data\zy1\session2\fif';
+dataPath = 'D:\EEG_Data\ld3\session2\fif';
 
 dur = 4; % time period after L/R go
 SP_filter = 'Laplacian';
@@ -176,8 +176,8 @@ hold off;
 
 %% BCI_command sending accuracy, with evidence accumulation
 S0 = [0.5; 0.5];
-alpha = 0.86; % pre-settings
-threshold = 0.7; % threshold
+alpha = 0.9; % pre-settings
+threshold = 0.65; % threshold
 
 S = zeros(n_trials, size(lpsdL,2), 2);
 
@@ -201,6 +201,8 @@ end
 
 ACC1 = classerror(testError_labels, test_decision);
 disp(['If the non-threshold-reached trials is removed: ' num2str(ACC1)]);
+remove_ratio = sum(test_decision == 0)/length(test_decision);
+disp(['The percentage of trials which were removed: ' num2str(remove_ratio*100), '%']);
 
 % Don't remove the no-decision trials, just use the last sample as decision
 for i = 1:length(test_decision)
@@ -216,8 +218,48 @@ for i = 1:length(test_decision)
 end
 
 ACC2 = classerror(testError_labels, test_decision);
-disp(['If the non-threshold-reached trials is removed: ' num2str(ACC2)]);
+disp(['If the non-threshold-reached trials is kept: ' num2str(ACC2)]);
 % Not recommended, but during the online recording, this is the case!!
 toc;
 
+%% statistics on feature
+% The 4-D matrix
+pool = [7, 8, 9, 10, 11];  % C1 C3 Cz C4 C2
+significance = 0.0001; % 0.05
+figure(5)
+for i = 1:length(pool)
+    ch = channel16(pool(i));
+    gaL = squeeze(lpsdL(:,:,pool(i),:));
+    gaR = squeeze(lpsdR(:,:,pool(i),:));
+    gaL = reshape(gaL, size(gaL,1)*size(gaL,2), size(gaL,3));
+    gaR = reshape(gaR, size(gaR,1)*size(gaR,2), size(gaR,3));
+    p_value = [];
+    for j = 1:size(gaL, 2) % channel
+        [~,p] = ttest(gaL(:,j), gaR(:,j));
+        p_value = [p_value p];
+    end
+        
+    subplot(1, length(pool), i)
+    plot(mean(gaL), 'r-.', 'LineWidth', 1.5);
+    hold on
+    plot(mean(gaR), 'b', 'LineWidth', 1.5);
+    hold on
+    for j = 1: length(p_value)
+        if p_value(j) <= significance
+            plot([j,j], [min(min(mean(gaL)), min(mean(gaR))),...
+                         max(max(mean(gaL)),max(mean(gaR)))],'c', 'LineWidth', 1);
+        end
+    end
+    set(gca,'XTick',1:4:23)
+    set(gca,'XTickLabel',4:8:48)
+    xlim([1,22]);
+    ylim([min(min(mean(gaL)), min(mean(gaR))), max(max(mean(gaL)),max(mean(gaR)))]);
+    title(ch)
+    xlabel('Frequency (Hz)')
+    ylabel('Magnitude (dB)')
+    legend('L', 'R');
+    axis square
+    set(gca, 'FontSize', 10);
+    hold off
+end
 
