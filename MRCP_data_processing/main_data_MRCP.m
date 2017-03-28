@@ -1,7 +1,7 @@
 % Dong Liu, IR&MCT, BUAA
 clear; close all;clc;
 tic;
-dataPath = 'K:\EEG_Data\qs9\session2\fif';
+dataPath = 'D:\EEG_Data\zy1\session2\fif';
 
 dur = 4; % time period after L/R go
 SP_filter = 'CAR';
@@ -45,14 +45,15 @@ for tr=1:length(trigger.r_go)
     trialsR(tr,:,:) = dataEEG(start-dur+1:start+dur,:);    
 end
 %%
-figure(1)
-Cz = squeeze(trialsL(:,:,9));
+ch = 11;
+% figure(1)
+Cz = squeeze(trialsL(:,:,ch));
 a = mean(Cz);
-plot(a)
-hold on
-plot([1024 1024], [min(a) max(a)]);
-hold off
-ylim([min(a) max(a)]);
+% plot(a)
+% hold on
+% plot([1024 1024], [min(a) max(a)]);
+% hold off
+% ylim([min(a) max(a)]);
 
 fvec1 = Cz(:,1:1024);
 fvec2 = Cz(:,1025:2048);
@@ -61,7 +62,7 @@ lbl2 = ones(size(fvec2,1),1)*2;
 
 K = 5;
 featureNumber = 10;
-testError_s = zeros(K,1);
+testError_s1 = zeros(K,1);
 cp = cvpartition(size(fvec1, 1), 'kfold', K);
 
 for k = 1: K
@@ -91,28 +92,28 @@ for k = 1: K
     testLabel = [testLabels1; testLabels2]; %
             
     [Class,~, post] = classify(testData, dataTrain, labelTrain, 'diaglinear');
-    testError_s(k) = classerror(testLabel, Class);
+    testError_s1(k) = classerror(testLabel, Class);
 end
 
-aveError = mean(testError_s);
+aveError = mean(testError_s1);
 disp(['L Mean error is ' num2str(aveError)]);
 
 %% 
-figure(2)
-Cz = squeeze(trialsR(:,:,9));
-a = mean(Cz);
-plot(a)
-hold on
-plot([1024 1024], [min(a) max(a)]);
-hold off
-ylim([min(a) max(a)]);
+% figure(2)
+Cz = squeeze(trialsR(:,:,ch));
+b = mean(Cz);
+% plot(a)
+% hold on
+% plot([1024 1024], [min(a) max(a)]);
+% hold off
+% ylim([min(a) max(a)]);
 
 fvec1 = Cz(:,1:1024);
 fvec2 = Cz(:,1025:2048);
 lbl1 = ones(size(fvec1,1),1);
 lbl2 = ones(size(fvec2,1),1)*2;
 
-testError_s = zeros(K,1);
+testError_s2 = zeros(K,1);
 cp = cvpartition(size(fvec1, 1), 'kfold', K);
 
 for k = 1: K
@@ -142,9 +143,34 @@ for k = 1: K
     testLabel = [testLabels1; testLabels2]; %
             
     [Class,~, post] = classify(testData, dataTrain, labelTrain, 'diaglinear');
-    testError_s(k) = classerror(testLabel, Class);
+    testError_s2(k) = classerror(testLabel, Class);
 end
 
-aveError = mean(testError_s);
+aveError = mean(testError_s2);
 disp(['R Mean error is ' num2str(aveError)]);
+
+%%
+figure(1)
+plot(a, 'r-.', 'LineWidth', 1.5);
+hold on
+plot(b, 'b', 'LineWidth', 1.5);
+hold on
+set(gca,'XTick',1:512:2048+1)
+set(gca,'XTickLabel',-2:1:2)
+xlim([1 2049])
+title('S6')
+xlabel('Time (s)')
+ylabel('Amplitude (uV)')
+legend('L', 'R');
+axis square
+set(gca, 'FontSize', 10);
+grid on
+hold off
+
+format short
+c = (1-[testError_s1; testError_s2])';
+% c = roundn(c, -4);
+vpa(c, 4)
+mean(c)
+
 
