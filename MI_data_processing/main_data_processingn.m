@@ -1,7 +1,7 @@
 % processing in python:
 clear; close all;clc;
 
-dataPath = 'K:\EEG_Data\qs9\session2\fif';
+dataPath = 'K:\EEG_Data\ygj\session2\fif';
 dur = 4; % time period after L/R go
 SP_filter = 'Laplacian';
 

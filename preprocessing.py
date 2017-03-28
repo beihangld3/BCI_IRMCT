@@ -4,7 +4,7 @@ from __future__ import division
 
 # set the data path
 #dataPath = r'D:\data\Records\fif'
-dataPath = r'K:\EEG_Data\qs9\session2\fif'
+dataPath = r'K:\EEG_Data\ygj\session2\fif'
 
 
 import os, sys, scipy, scipy.io
