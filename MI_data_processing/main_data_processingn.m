@@ -46,7 +46,8 @@ for tr=1:size(trialsR,1)
     psdR(tr,:,:,:) = processTrial(squeeze(trialsR(tr,:,:)), 'Laplacian');    
 end
 lpsdR = log(psdR);
-
+load('chanlocs16.mat')
+channel16 = importdata('channelLabels16.txt')'; 
 %% feature analysis
 fvec1 = reshape(lpsdL, [size(lpsdL,1)*size(lpsdL,2) size(lpsdL,3)*size(lpsdL,4)]);
 % fvec1 = reshape(lpsdL, [80*49 16*23]);
@@ -54,7 +55,6 @@ lbl1 = ones(size(fvec1,1),1);
 fvec2 = reshape(lpsdR, [size(lpsdR,1)*size(lpsdR,2) size(lpsdR,3)*size(lpsdR,4)]);
 % fvec2 = reshape(lpsdR, [80*49 16*23]);
 lbl2 = ones(size(fvec2,1),1)*2;
-load('chanlocs16.mat')
 
 DP12 = cva_tun_opt([fvec1;fvec2],[lbl1;lbl2]);
 DPM12 = reshape(DP12,16,23);
@@ -63,7 +63,6 @@ figure(1)
 imagesc(DPM12);
 xlabel('Frequency band (Hz)');
 ylabel('Channel label');
-channel16 = importdata('channelLabels16.txt')'; 
 set(gca,'YTick',1:16)
 set(gca,'YTickLabel',channel16)
 set(gca,'XTick',1:4:23)
@@ -259,7 +258,7 @@ for i = 1:length(pool)
     ylabel('Magnitude (dB)')
     legend('L', 'R');
     axis square
-    set(gca, 'FontSize', 10);
+    set(gca, 'FontSize', 15);
     hold off
 end
 
