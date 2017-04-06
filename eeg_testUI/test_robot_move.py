@@ -12,7 +12,7 @@ CLS_FILE= r'D:\EEG_Data\ld3\session2\fif\classifier\classifier-64bit.pcl'
 
 # protocol: 
 trials_each= 30   # put it to a small number for debug  30
-t_init= 20 # initial waiting time before starting  15
+t_init= 5 # initial waiting time before starting  15
 
 ############################################
 # For Debug, fake decoder, FAKE_CLS = None or 'left' or 'right' or 'middle' or 'random'
@@ -54,7 +54,7 @@ t_classify= 5 # MI or nothing
 
 # Kinect4Rex joystitck constants, corresponding to bar_dirs.values()
 # no movement, front, back, left, right, stand up, sit down
-robot_control= {'L':'{"id"=1,"name"="ld","password"=123,"command"="left"}', 'R': '{"id"=1,"name"="ld","password"=123,"command"="right"}'}
+robot_control= {'L':'{"id"=1,"name"="ld","password"=123,"command"="left"}\n', 'R': '{"id"=1,"name"="ld","password"=123,"command"="right"}\n'}
 
 # direction affordances (order: - , + )
 
@@ -195,16 +195,17 @@ if __name__=='__main__':
 		trigger= pyLptControl.MockTrigger()
 		trigger.init(50)
 
-	HOST= raw_input('Server IP address:')
-	#host= '192.168.2.115'
-	host = HOST
+#	HOST= raw_input('Server IP address:')
+#	host = HOST
+	host= '127.0.0.1'
 	port = 9999
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   #dongliu
 	s.connect((host, port))
 	#data = s.recv(1024)
 	#print('server:'  + data)
-	s.sendall('{"id"=1,"name"="ld","password"=123,"command"="reset"}')
+	s.sendall('{"id"=1,"name"="ld","password"=123,"command"="reset"}\n')
+	time.sleep(30)
 	#dir3 = '{"id"=1,"name"="ld","password"=123,"command"="stop"}'
 	subjectID= raw_input('Subject ID ? ').strip()
 	print ('subjectID:', subjectID)
@@ -404,7 +405,7 @@ if __name__=='__main__':
 			if WITH_Robot:
 				print('>> client order', robot_action)
 				s.sendall(robot_action)
-#				time.sleep(5)
+				time.sleep(20)
 			print('>> Waiting for next start signal from the robot.')
 			results= []
 		

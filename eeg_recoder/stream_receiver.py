@@ -266,7 +266,6 @@ class StreamReceiver:
             if len(tslist) > 0:
                 break
             time.sleep(0.001)
-            print('&&&&&&&&&&&&')
         else:
             self.print('Warning: Timeout occurred while acquiring data. Amp driver bug ?')
             return np.zeros( (0, self.channels) ), []

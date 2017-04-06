@@ -7,14 +7,9 @@ Dong Liu, IRMCT, BUAA, 2017
 # communica with the exoskeleton?
 WITH_Robot= False
 # classifier
-<<<<<<< HEAD
 #CLS_FILE= r'C:\data\Records\fif\classifier\classifier-64bit.pcl'
-CLS_FILE= r'D:\EEG_Data\ld3\pool\classifier\classifier-64bit.pcl'
-=======
-#CLS_FILE= r'E:\DongLiu_data\MI\fif\classifier\classifier-64bit.pcl'
->>>>>>> b03c5de57535dad284c9f1a9897ba37a3bcc3a82
+CLS_FILE= r'D:\EEG_Data\ld3\session2\fif\classifier\classifier-64bit.pcl'
 
-CLS_FILE= r'D:\data\Records\fif\classifier\classifier-64bit.pcl'
 # protocol: 
 trials_each= 30   # put it to a small number for debug  30
 t_init= 20 # initial waiting time before starting  15

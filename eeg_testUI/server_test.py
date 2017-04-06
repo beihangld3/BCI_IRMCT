@@ -4,8 +4,7 @@ import time
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-#s.bind(("192.168.2.112", 9999))
-s.bind(("192.168.2.111", 9999))
+s.bind(("192.168.1.107", 9999))
 
 s.listen(1)
 print('Waiting for connection')
